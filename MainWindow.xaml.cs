@@ -36,19 +36,53 @@ namespace T0_Do_List
             TaskList.ItemsSource = ADC.TodoItem.ToList();
         }
 
+        private bool ValidateData()
+        {
+            bool valid = true;
+            if (Title.Text == "")
+            {
+                valid = false;
+                MessageBox.Show("PLEASE ENTER A TITLE!", "ERROR!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            if (Description.Text == "")
+            {
+                valid = false;
+                MessageBox.Show("PLEASE ENTER A DESCRIPTION!", "ERROR!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            if (TaskDate.Text == "")
+            {
+                valid = false;
+                MessageBox.Show("PLEASE ENTER A DATE!", "ERROR!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            if (State.Text == "")
+            {
+                valid = false;
+                MessageBox.Show("PLEASE SELECT A STATE!", "ERROR!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return valid;
+        }
+
         private void addbtn_Click(object sender, RoutedEventArgs e)
         {
-            ADC.Add(new TodoItem {
-                Title= Title.Text,
-                Description= Description.Text,
-                TaskDate= TaskDate.SelectedDate,
-                Status = State.Text
+            if (!ValidateData())
+            {
+                return;
+            }
+
+                ADC.Add(new TodoItem
+                {
+                    Title = Title.Text,
+                    Description = Description.Text,
+                    TaskDate = TaskDate.SelectedDate,
+                    Status = State.Text
                 });
+
+                ADC.SaveChanges();
+                ClearData();
+                MessageBox.Show("ITEMS ADDED!", "CONFIRMATION", MessageBoxButton.OK, MessageBoxImage.Information);
+                ShowData();
             
-            ADC.SaveChanges();
-            ClearData();
-            MessageBox.Show("ITEMS ADDED!","CONFIRMATION",MessageBoxButton.OK, MessageBoxImage.Information);
-            ShowData();
         }
 
         private void TaskList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -60,11 +94,31 @@ namespace T0_Do_List
                 TaskDate.SelectedDate = item.TaskDate;
                 State.Text = item.Status;
                 selectedId = item.Id;
+                EditMode();
             }
+        }
+
+        private void EditMode()
+        {
+            updatebtn.IsEnabled = true;
+            deletebtn.IsEnabled = true;
+            addbtn.IsEnabled = false;
+        }
+
+        private void NewMode()
+        {
+            updatebtn.IsEnabled = false;
+            deletebtn.IsEnabled = false;
+            addbtn.IsEnabled = true;
         }
 
         private void updatebtn_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateData())
+            {
+                return;
+            }
+
             if(selectedId != 0)
             {
             var item = ADC.TodoItem.Find(selectedId);
@@ -75,6 +129,7 @@ namespace T0_Do_List
             ADC.TodoItem.Update(item);
             ADC.SaveChanges();
             ClearData();
+            NewMode();
             MessageBox.Show("ITEMS UPDATED!", "CONFIRMATION", MessageBoxButton.OK, MessageBoxImage.Information);
             ShowData();
             }
@@ -88,9 +143,16 @@ namespace T0_Do_List
                 ADC.TodoItem.Remove(item);
                 ADC.SaveChanges();
                 ClearData();
+                NewMode() ;
                 MessageBox.Show("ITEMS DELETED!", "CONFIRMATION", MessageBoxButton.OK, MessageBoxImage.Information);
                 ShowData();
             }
+        }
+
+        private void clearBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ClearData();
+            NewMode();
         }
     }
 }
