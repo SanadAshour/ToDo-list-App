@@ -23,8 +23,9 @@
 
             <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button x:Name="addbtn" Content="ADD TASK" Margin="5" Click="addbtn_Click"/>
-                <Button x:Name="updatebtn" Content="UPDATE TASK" Margin="5" Click="updatebtn_Click"/>
-                <Button x:Name="deletebtn" Content="DELETE TASK" Margin="5" Click="deletebtn_Click"/>
+                <Button x:Name="updatebtn" Content="UPDATE TASK" Margin="5" Click="updatebtn_Click" IsEnabled="False"/>
+                <Button x:Name="deletebtn" Content="DELETE TASK" Margin="5" Click="deletebtn_Click" IsEnabled="False"/>
+                <Button x:Name="clearBtn" Content="CLEAR FIELDS" Margin="5" Click="clearBtn_Click"/>
             </StackPanel>
 
             <ListView x:Name="TaskList" SelectionChanged="TaskList_SelectionChanged" >
