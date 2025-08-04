@@ -16,6 +16,6 @@ namespace T0_Do_List
         //FK
         public int CategoryId { get; set; }
         //Navigation prop
-        public Category Category { get; set; } = new Category();
+        public Category? Category { get; set; } 
     }
 }
