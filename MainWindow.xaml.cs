@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,7 +35,7 @@ namespace T0_Do_List
 
         private void ShowData()
         {
-            TaskList.ItemsSource = ADC.TodoItem.ToList();
+            TaskList.ItemsSource = ADC.TodoItem.Include(t => t.Category).ToList();
         }
 
         private bool ValidateData()
@@ -76,7 +77,8 @@ namespace T0_Do_List
                     Title = Title.Text,
                     Description = Description.Text,
                     TaskDate = TaskDate.SelectedDate,
-                    Status = State.Text
+                    Status = State.Text,
+                    CategoryId = (int)CategoryCB.SelectedValue
                 });
 
                 ADC.SaveChanges();
@@ -95,6 +97,7 @@ namespace T0_Do_List
                 TaskDate.SelectedDate = item.TaskDate;
                 State.Text = item.Status;
                 selectedId = item.Id;
+                CategoryCB.SelectedValue = item.CategoryId;
                 EditMode();
             }
         }
@@ -127,6 +130,7 @@ namespace T0_Do_List
             item.Description = Description.Text;
             item.TaskDate = TaskDate.SelectedDate;
             item.Status = State.Text;
+            item.CategoryId = (int)CategoryCB.SelectedValue;
             ADC.TodoItem.Update(item);
             ADC.SaveChanges();
             ClearData();
