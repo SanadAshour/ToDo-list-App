@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +13,9 @@ namespace T0_Do_List
         public string? Description { get; set; }
         public DateTime? TaskDate { get; set; }
         public string? Status { get; set; }
+        //FK
+        public int CategoryId { get; set; }
+        //Navigation prop
+        public Category Category { get; set; } = new Category();
     }
 }
