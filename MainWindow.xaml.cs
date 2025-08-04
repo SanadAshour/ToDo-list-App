@@ -19,6 +19,7 @@ namespace T0_Do_List
         public MainWindow()
         {
             InitializeComponent();
+            fillCategoryCB();
             ShowData();
         }
         private int selectedId = 0;
@@ -153,6 +154,17 @@ namespace T0_Do_List
         {
             ClearData();
             NewMode();
+        }
+
+        private void ManageCategory_Click(object sender, RoutedEventArgs e)
+        {
+            CategoryWindow w = new CategoryWindow();
+            w.ShowDialog();
+        }
+
+        private void fillCategoryCB()
+        {
+            CategoryCB.ItemsSource = ADC.Categories.ToList();
         }
     }
 }
