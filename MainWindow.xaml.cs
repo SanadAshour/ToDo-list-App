@@ -24,18 +24,22 @@ namespace T0_Do_List
             ShowData();
         }
         private int selectedId = 0;
-        private AppDbContext ADC = new AppDbContext();
+        private readonly ITodoRepository repoTodo = new TodoRepository();
+        private readonly ICategoryRepository repoCate = new CategoryRepository();
+
 
         private void ClearData()
         {
             Title.Clear();
             Description.Clear();
             TaskDate.SelectedDate = null;
+            State.SelectedItem = null;
+            CategoryCB.SelectedItem = null;
         }
 
         private void ShowData()
         {
-            TaskList.ItemsSource = ADC.TodoItem.Include(t => t.Category).ToList();
+            TaskList.ItemsSource = repoTodo.GetAll();
         }
 
         private bool ValidateData()
@@ -72,7 +76,7 @@ namespace T0_Do_List
                 return;
             }
 
-                ADC.Add(new TodoItem
+                repoTodo.Add(new TodoItem
                 {
                     Title = Title.Text,
                     Description = Description.Text,
@@ -81,7 +85,6 @@ namespace T0_Do_List
                     CategoryId = (int)CategoryCB.SelectedValue
                 });
 
-                ADC.SaveChanges();
                 ClearData();
                 MessageBox.Show("ITEMS ADDED!", "CONFIRMATION", MessageBoxButton.OK, MessageBoxImage.Information);
                 ShowData();
@@ -125,14 +128,13 @@ namespace T0_Do_List
 
             if(selectedId != 0)
             {
-            var item = ADC.TodoItem.Find(selectedId);
+            var item = repoTodo.GetById(selectedId);
             item.Title = Title.Text;
             item.Description = Description.Text;
             item.TaskDate = TaskDate.SelectedDate;
             item.Status = State.Text;
             item.CategoryId = (int)CategoryCB.SelectedValue;
-            ADC.TodoItem.Update(item);
-            ADC.SaveChanges();
+            repoTodo.Update(item);
             ClearData();
             NewMode();
             MessageBox.Show("ITEMS UPDATED!", "CONFIRMATION", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -144,9 +146,7 @@ namespace T0_Do_List
         {
             if (selectedId != 0)
             {
-                var item = ADC.TodoItem.Find(selectedId);
-                ADC.TodoItem.Remove(item);
-                ADC.SaveChanges();
+                repoTodo.Delete(selectedId);
                 ClearData();
                 NewMode() ;
                 MessageBox.Show("ITEMS DELETED!", "CONFIRMATION", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -168,7 +168,7 @@ namespace T0_Do_List
 
         private void fillCategoryCB()
         {
-            CategoryCB.ItemsSource = ADC.Categories.ToList();
+            CategoryCB.ItemsSource = repoCate.GetAll();
         }
     }
 }
